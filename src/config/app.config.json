@@ -1,0 +1,23 @@
+{
+	"informations": {
+		"name": "TheBeast",
+		"version": "beta-1.0.0"
+	},
+	"colors": {
+		"blurple": "#5865F2",
+		"yellow": "#FEE75C",
+		"green": "#57F287",
+		"red": "#ED4245",
+		"transparent": "#2f3136"
+	},
+	"credentials": {
+		"HOST": "127.0.0.1",
+		"PORT": 3306,
+		"USER": "beast",
+		"DATABASE": "infinite"
+	},
+	"authorizedServers": ["1013899578652753930", "1029472372790661141", "1029473271705505894", "1029473456670113812", "1029473385207574548", "1029473332732637284"],
+	"commandsOnlyChannels": {
+	},
+	"mainServer": "1013899578652753930"
+}
