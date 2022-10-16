@@ -1,9 +1,9 @@
-import { Configuration } from "../utils/config.util";
 import { IEvent } from "../utils/interfaces/event.interface"
 import { CommandsHandler } from "../handlers/commands.handler";
-import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody, Client, Channel } from 'discord.js';
+import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody, Client } from 'discord.js';
 import { Logging, LogType } from '../utils/logging.util';
 import { EmbedsUtil } from "../utils/embeds.util";
+import { Configuration } from "../utils/config.util";
 
 const event: IEvent = {
     name: 'ready',
@@ -11,21 +11,27 @@ const event: IEvent = {
     execute(app: Client){
 		Logging.write('Initialization ended', LogType.Header);
         Logging.write('App is now ready !', LogType.Success);
-		app.channels.fetch("1023002996499554304").then((channel: any) => {
+		app.channels.fetch("1029884627604738179").then((channel: any) => {
 			Logging.loggingChannel = channel;
 			Logging.loggingChannel?.send({embeds: [EmbedsUtil.success("🤖 Bot started")]});
 		})
 
-		const appConfig: Configuration = new Configuration();
+		app.guilds.cache.forEach(g => { if(!new Configuration().authorizedServers.includes(g.id)) g.leave() });
+
 		const rest = new REST({version: '10'}).setToken(process.env.TOKEN || 'NO_TOKEN');
-        const jsonCommands: RESTPostAPIApplicationCommandsJSONBody[] = CommandsHandler.commands.map(c => c.data.toJSON());
 
 		try {
-			appConfig.authorizedServers.forEach(s => {
-				rest.put(
-					Routes.applicationGuildCommands(app.user?.id || 'NO_ID', s),
-					{ body: jsonCommands }
-				)
+			const jsonGlobalCommands: RESTPostAPIApplicationCommandsJSONBody[] = CommandsHandler.commands.filter(c => c.global).map(c => c.data.toJSON());
+			rest.put(Routes.applicationCommands(app.user?.id || ''), {body: jsonGlobalCommands});
+
+			let specificServersIds: string[] = [];
+			CommandsHandler.commands.filter(c => !c.global && c.specificTo).forEach(c => {
+				c.specificTo?.forEach(s => { if(!specificServersIds.includes(s)) specificServersIds.push(s); });
+			})
+
+			specificServersIds.forEach(s => {
+				const jsonSpecificCommands: RESTPostAPIApplicationCommandsJSONBody[] = CommandsHandler.commands.filter(c => !c.global && c.specificTo?.includes(s)).map(c => c.data.toJSON());
+				rest.put(Routes.applicationGuildCommands(app.user?.id || '', s), {body: jsonSpecificCommands});
 			})
 		} catch (err) {
 			Logging.write(`${err}`, LogType.Error);

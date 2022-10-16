@@ -3,10 +3,10 @@ import { ActivityType, Client } from 'discord.js';
 import { CommandsHandler } from './handlers/commands.handler';
 import { EventsHandler } from './handlers/events.handler';
 import { Configuration } from './utils/config.util';
-import { Database } from './utils/database.util';
 import { Logging, LogType } from './utils/logging.util';
 import { v4 as uuidV4 } from 'uuid';
 import { ButtonsHandler } from './handlers/buttons.handler';
+import axios from 'axios';
 
 const appRunnerUuid: string = uuidV4();
 
@@ -23,22 +23,12 @@ process.on("unhandledRejection", (reason: any, promise: Promise<any>) => {
 })
 
 const start = () => {
-	const appConfig: Configuration = new Configuration();
+	const envConfig: Configuration = new Configuration();
 
-	Logging.write(`Starting app ${appRunnerUuid}: ${appConfig.name} (${appConfig.version})`, LogType.Header);
+	Logging.write(`Starting app ${appRunnerUuid}: ${envConfig.name} (${envConfig.version})`, LogType.Header);
 
-	Logging.write(`Database loading`, LogType.Title);
-	Logging.write(`Connecting to database... (${appConfig.credentials.USER}@${appConfig.credentials.HOST}:${appConfig.credentials.PORT})`);
-	new Promise<void>((resolve, reject) => {
-		Database.pool.query("SELECT 1", (err: string) => {
-			if(err){
-				Logging.write(err, LogType.Error);
-				reject();
-			}
-			Logging.write(`Successfully connected to database !`, LogType.Success);
-			resolve();
-		});
-	}).then(() => {
+	axios.get(envConfig.urls.main)
+	.then(() => {
 		CommandsHandler.handle().then(() => {
 			EventsHandler.handle().then(() => {
 				ButtonsHandler.handle().then(() => {
@@ -46,6 +36,8 @@ const start = () => {
 				})
 			});
 		});
+	}).catch(reason => {
+		Logging.write(`Failed connecting to the API. ${reason}`, LogType.Error);
 	})
 }
 

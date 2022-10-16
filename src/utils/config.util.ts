@@ -1,34 +1,38 @@
-import { IAppConfig } from "./interfaces/app.config.interface";
+import { IEnvConfig } from "./interfaces/env.interface";
 import fs from 'fs';
 
 export class Configuration {
-	private _appConfig: IAppConfig;
+	private _envConfig: IEnvConfig;
 
 	constructor(){
-		this._appConfig = JSON.parse(fs.readFileSync('./src/config/app.config.json').toString());
+		this._envConfig = JSON.parse(fs.readFileSync('./src/config/env.config.json').toString());
 	}
 
 	get name(){
-		return this._appConfig.informations.name;
+		return this._envConfig.informations.name;
 	}
 
 	get version(){
-		return this._appConfig.informations.version;
+		return this._envConfig.informations.version;
 	}
 
-	get credentials(){
-		return this._appConfig.credentials;
+	get urls(){
+		return this._envConfig.urls;
 	}
 
-	get authorizedServers(){
-		return this._appConfig.authorizedServers;
+	get authorizedServers(): string[] {
+		return this._envConfig.authorizedServers;
 	}
 
-	get mainServer(){
-		return this._appConfig.mainServer;
+	get mainServer(): string {
+		return this._envConfig.mainServer;
 	}
 
-	public getCommandsOnly(gid: string): string[]{
-		return this._appConfig.commandsOnlyChannels[gid] || [];
+	public getCommandsOnly(gid: string): string[] {
+		return this._envConfig.commandsOnlyChannels[gid] || [];
+	}
+
+	get globalRoles(): string[] {
+		return this._envConfig.globalRoles;
 	}
 }

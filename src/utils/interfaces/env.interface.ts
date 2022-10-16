@@ -1,10 +1,15 @@
 import { ColorResolvable } from "discord.js";
 
-export interface IAppConfig {
+interface _IUrls {
+	main: string;
+}
+
+export interface IEnvConfig {
 	informations: {
 		name: string;
 		version: string;
 	};
+	urls: _IUrls;
 	colors: {
 		blurple: ColorResolvable;
 		yellow: ColorResolvable;
@@ -12,13 +17,8 @@ export interface IAppConfig {
 		red: ColorResolvable;
 		transparent: ColorResolvable;
 	};
-	credentials: {
-		HOST: string;
-		PORT: number;
-		USER: string;
-		DATABASE: string;
-	};
 	authorizedServers: string[];
 	commandsOnlyChannels: any;
 	mainServer: string;
+	globalRoles: string[];
 }
