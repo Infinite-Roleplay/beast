@@ -11,7 +11,8 @@ export interface ICommand {
 	data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
 	execute: (interaction: CommandInteraction, app: Client) => void;
 	timeout?: number;
-	restrictToChannel?: string[];
-	permissions?: Permission[];
+	restrictToChannels?: string[];
 	inTest?: boolean;
+	global?: boolean;
+	specificTo?: string[];
 }

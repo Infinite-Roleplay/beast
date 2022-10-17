@@ -1,7 +1,9 @@
 import fs from 'fs';
 import { Configuration } from './config.util';
 import color from 'colors/safe';
-import { TextChannel } from 'discord.js';
+import { EmbedBuilder, Guild, TextChannel } from 'discord.js';
+import app from '../app';
+import { EmbedsUtil } from './embeds.util';
 
 export enum LogType {
 	Title = "TITLE",
@@ -29,6 +31,15 @@ export class Logging {
 
 				resolve();
 			})
+		});
+	}
+
+	static logInChannel(serverId: string | null, title: string, content?: string[]): Promise<void>{
+		const from: Guild | undefined = app.guilds.cache.find(g => g.id === serverId);
+		return new Promise((resolve, reject) => {
+			const emb: EmbedBuilder = EmbedsUtil.info(title, content);
+			emb.setFooter({text: `on ${from?.name}`, iconURL: from?.iconURL() || ""});
+			this.loggingChannel.send({embeds: [emb]}).then(() => resolve()).catch(() => reject());
 		});
 	}
 

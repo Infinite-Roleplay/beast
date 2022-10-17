@@ -1,9 +1,11 @@
 import fs from 'fs';
 import { Logging, LogType } from '../utils/logging.util';
 import { ICommand } from "../utils/interfaces/command.interface";
+import { Collection, User } from 'discord.js';
 
 export class CommandsHandler {
 	static commands: ICommand[] = [];
+	static timeouts: Collection<User, string[]> = new Collection<User, string[]>();
 
 	static handle(): Promise<void>{
 		return new Promise((resolve, reject) => {
