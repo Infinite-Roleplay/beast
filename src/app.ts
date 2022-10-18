@@ -6,7 +6,7 @@ import { Configuration } from './utils/config.util';
 import { Logging, LogType } from './utils/logging.util';
 import { v4 as uuidV4 } from 'uuid';
 import { ButtonsHandler } from './handlers/buttons.handler';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const appRunnerUuid: string = uuidV4();
 
@@ -27,12 +27,15 @@ const start = () => {
 
 	Logging.write(`Starting app ${appRunnerUuid}: ${envConfig.name} (${envConfig.version})`, LogType.Header);
 
-	axios.get(envConfig.urls.main)
-	.then(() => {
+	axios.get(envConfig.urls.main, {
+		headers: { 'Api-Key': process.env.API_KEY }
+	})
+	.then((res: AxiosResponse) => {
 		CommandsHandler.handle().then(() => {
 			EventsHandler.handle().then(() => {
 				ButtonsHandler.handle().then(() => {
 					app.login(process.env.TOKEN);
+					Logging.write(res.data["status"], LogType.Success);
 				})
 			});
 		});
