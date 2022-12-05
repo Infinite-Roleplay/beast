@@ -17,5 +17,6 @@
 	"punishements": "/punishements",
 	"punishement": "/punishements/{id}",
 	"subscriptions": "/subscriptions",
-	"subscription": "/subscriptions/{id}"
+	"subscription": "/subscriptions/{id}",
+	"authorization": "/authorization/{uuid}"
 }

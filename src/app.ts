@@ -7,6 +7,7 @@ import { Logging, LogType } from './utils/logging.util';
 import { v4 as uuidV4 } from 'uuid';
 import { ButtonsHandler } from './handlers/buttons.handler';
 import axios, { AxiosResponse } from 'axios';
+import { API } from './utils/api.util';
 
 const appRunnerUuid: string = uuidV4();
 
@@ -14,7 +15,7 @@ const app: Client = new Client({
 	intents: ["Guilds", "GuildMembers", "GuildMessages", "GuildMessageReactions", "MessageContent"],
 	presence: {
 		status: 'online',
-		activities: [{ name: 'Studying SCP-#@{ej@1', type: ActivityType.Playing }]
+		activities: [{ name: 'Studying SCP Wiki', type: ActivityType.Playing }]
 	}
 });
 
@@ -27,18 +28,21 @@ const start = () => {
 
 	Logging.write(`Starting app ${appRunnerUuid}: ${envConfig.name} (${envConfig.version})`, LogType.Header);
 
-	axios.get(envConfig.urls.main, {
-		headers: { 'Api-Key': process.env.API_KEY }
-	})
+	axios.get(new API().authorizationUrl(process.env.API_KEY))
 	.then((res: AxiosResponse) => {
-		CommandsHandler.handle().then(() => {
-			EventsHandler.handle().then(() => {
-				ButtonsHandler.handle().then(() => {
-					app.login(process.env.TOKEN);
-					Logging.write(res.data["status"], LogType.Success);
-				})
+		if(res.data.data != 'true'){
+			Logging.write(`Invalid API Key provided.`, LogType.Error);
+		} else {
+			CommandsHandler.handle().then(() => {
+				EventsHandler.handle().then(() => {
+					ButtonsHandler.handle().then(() => {
+						Logging.write(`Application final launch phase`, LogType.Title);
+						app.login(process.env.TOKEN);
+						Logging.write("Connected to the API", LogType.Success);
+					})
+				});
 			});
-		});
+		}
 	}).catch(reason => {
 		Logging.write(`Failed connecting to the API. ${reason}`, LogType.Error);
 	})

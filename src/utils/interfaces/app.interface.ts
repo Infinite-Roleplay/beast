@@ -18,4 +18,5 @@ export interface IAppConfig {
 	punishment: string; // Get specific punishment informations | {id}
 	subscriptions: string; // Get subscriptions list
 	subscription: string; // Get specific subscription informations | {id}
+	authorization: string; // Verify if a API Key is valid
 }

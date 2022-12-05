@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Client, CommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 
 export interface Permission {
 	id: string;
@@ -8,7 +8,7 @@ export interface Permission {
 
 export interface ICommand {
 	name: string;
-	data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+	data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder;
 	execute: (interaction: CommandInteraction, app: Client) => void;
 	timeout?: number;
 	restrictToChannels?: string[];

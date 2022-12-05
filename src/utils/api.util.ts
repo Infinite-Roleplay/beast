@@ -86,4 +86,8 @@ export class API {
 	subscriptionUrl(id: string = "NULL"): string {
 		return this._envConfig.urls.main + this._appConfig.subscription.replace("{id}", id);
 	}
+
+	authorizationUrl(uuid: string = "NULL"): string {
+		return this._envConfig.urls.main + this._appConfig.authorization.replace("{uuid}", uuid);
+	}
 }
