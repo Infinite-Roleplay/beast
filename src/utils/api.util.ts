@@ -90,4 +90,12 @@ export class API {
 	authorizationUrl(uuid: string = "NULL"): string {
 		return this._envConfig.urls.main + this._appConfig.authorization.replace("{uuid}", uuid);
 	}
+
+	formatRole(): string {
+		return this._envConfig.urls.main + this._appConfig.formatRole;
+	}
+
+	formatChannel(): string {
+		return this._envConfig.urls.main + this._appConfig.formatChannel;
+	}
 }

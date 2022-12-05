@@ -18,5 +18,7 @@ export interface IAppConfig {
 	punishment: string; // Get specific punishment informations | {id}
 	subscriptions: string; // Get subscriptions list
 	subscription: string; // Get specific subscription informations | {id}
-	authorization: string; // Verify if a API Key is valid
+	authorization: string; // Verify if a API Key is valid | {uuid}
+	formatRole: string; // Format a role name to corresponding font
+	formatChannel: string; // Format a channel name to corresponding font
 }

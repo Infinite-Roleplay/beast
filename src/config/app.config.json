@@ -18,5 +18,7 @@
 	"punishement": "/punishements/{id}",
 	"subscriptions": "/subscriptions",
 	"subscription": "/subscriptions/{id}",
-	"authorization": "/authorization/{uuid}"
+	"authorization": "/authorization/{uuid}",
+	"formatRole": "/format/role",
+	"formatChannel": "/format/channel"
 }
